@@ -20,6 +20,7 @@ mkdir -p $rootfs
 (cd $rootfs ; cat $ramdisk | gzip -d | sudo cpio -i)
 
 mkdir $workdir/system
+# mkdir $rootfs/system
 sudo mount -o loop,ro $system $workdir/system
 sudo cp -ar $workdir/system/* $rootfs/system
 sudo umount $workdir/system
@@ -28,6 +29,7 @@ gcc -o $workdir/uidmapshift external/nsexec/uidmapshift.c
 sudo $workdir/uidmapshift -b $rootfs 0 100000 65536
 
 # FIXME
+sudo cp /home/kitsune/sources/anbox/scripts/anbox-init.sh $rootfs/anbox-init.sh
 sudo chmod +x $rootfs/anbox-init.sh
 
 sudo mksquashfs $rootfs $image -comp xz -no-xattrs

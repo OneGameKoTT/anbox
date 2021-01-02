@@ -401,6 +401,8 @@ void LxcContainer::start(const Configuration &configuration) {
   auto devices = configuration.devices;
 
   // If we have binderfs support we can dynamically allocate all our devices
+
+  if(!fs::exists("/dev/binderfs")) fs::create_directories("/dev/binderfs");
   if (common::BinderDeviceAllocator::is_supported()) {
     DEBUG("Using binderfs to allocate our own binder nodes");
 
@@ -409,11 +411,11 @@ void LxcContainer::start(const Configuration &configuration) {
         binder_devices.size() != num_needed_binders)
       throw std::runtime_error("Failed to allocate necessary binder devices");
 
-    bind_mounts.insert({binder_devices[0]->path().string(), "/dev/binder"});
+    bind_mounts.insert({binder_devices[0]->path().string(), "/dev/binderfs/binder"});
     binder_devices_ = std::move(binder_devices);
   } else {
-    DEBUG("Using static binder device /dev/binder");
-    devices.insert({"/dev/binder", { 0666 }});
+    DEBUG("Using static binder device /dev/binderfs/binder");
+    devices.insert({"/dev/binderfs/binder", { 0666 }});
   }
 
   for (const auto &bind_mount : bind_mounts) {

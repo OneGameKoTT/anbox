@@ -86,19 +86,14 @@ start() {
 	fi
 
 	# Load all relevant kernel modules
-	modprobe binder_linux
-	modprobe ashmem_linux
+	modprobe binder
+	modprobe ashmem
 
 	# Ensure we have binderfs mounted when our kernel supports it
-	if cat /proc/filesystems | grep -q binder ; then
-		mkdir -p "$SNAP_COMMON"/binderfs
-		# Remove old mounts so that we start fresh without any devices allocated
-		if cat /proc/mounts | grep -q "binder $SNAP_COMMON/binderfs" ; then
-			umount "$SNAP_COMMON"/binderfs
-		fi
-		mount -t binder none "$SNAP_COMMON"/binderfs
-	fi
-
+	
+	mkdir /dev/binderfs
+	mount -t binder binder /dev/binderfs
+	
 	exec "$SNAP"/bin/anbox-wrapper.sh container-manager \
 		--data-path="$DATA_PATH" \
 		--android-image="$ANDROID_IMG" \

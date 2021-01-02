@@ -41,7 +41,7 @@ namespace {
 constexpr const char *os_release_path{"/etc/os-release"};
 constexpr const char *host_os_release_path{"/var/lib/snapd/hostfs/etc/os-release"};
 constexpr const char *proc_version_path{"/proc/version"};
-constexpr const char *binder_path{"/dev/binder"};
+constexpr const char *binder_path{"/dev/binderfs/binder"};
 constexpr const char *ashmem_path{"/dev/ashmem"};
 constexpr const char *os_release_name{"NAME"};
 constexpr const char *os_release_version{"VERSION"};
@@ -78,7 +78,6 @@ class SystemInformation {
     s << "os:" << std::endl
       << "  name: " << os_info_.name << std::endl
       << "  version: " << os_info_.version << std::endl
-      << "  snap-based: " << std::boolalpha << os_info_.snap_based << std::endl;
 
     s << "kernel:" << std::endl
       << "  version: " << kernel_info_.version << std::endl
@@ -158,7 +157,7 @@ class SystemInformation {
       std::ifstream in(proc_version_path);
       std::getline(in, kernel_info_.version);
     }
-
+    if(!fs::exists("/dev/binderfs")) fs::create_directories("/dev/binderfs");
     kernel_info_.binder = fs::exists(binder_path);
     kernel_info_.ashmem = fs::exists(ashmem_path);
   }

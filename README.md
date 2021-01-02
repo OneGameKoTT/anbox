@@ -1,5 +1,4 @@
-[![Snap Status](https://build.snapcraft.io/badge/anbox/anbox.svg)](https://build.snapcraft.io/user/anbox/anbox)
-[![Build Status](https://travis-ci.org/anbox/anbox.svg?branch=master)](https://travis-ci.org/anbox/anbox)
+forked from [anbox/anbox](https://github.com/anbox/anbox) for linux kernel >= 5.2
 
 # Anbox
 
@@ -40,7 +39,7 @@ The used image is currently based on Android 7.1.1
 
 ## Installation
 
-See our [installation instructions](docs/install.md) for details.
+See our [installation instructions](docs/install.md) for details. (old documentation)
 
 ## Supported Linux Distributions
 
@@ -70,6 +69,17 @@ relies on the proprietary Google Play Services, which are not installed.
 ## Build from source
 
 ### Requirements
+
+Linux Kernel >= 5.2
+with build config: 
+```
+CONFIG_ANDROID=y
+CONFIG_ANDROID_BINDER_IPC=y
+CONFIG_ANDROID_BINDERFS=y
+CONFIG_ANDROID_BINDER_DEVICES="binder,hwbinder,vndbinder"
+CONFIG_ANDROID_BINDER_IPC_SELFTEST=y
+CONFIG_ASHMEM=y
+```
 
 To build the Anbox runtime itself there is nothing special to know. We're using
 cmake as build system. A few build dependencies need to be present on your host
@@ -117,7 +127,7 @@ We recommend Ubuntu 20.04 (focal) as your build environment.
 Afterwards you can build Anbox with
 
 ```
-$ git clone https://github.com/anbox/anbox.git --recurse-submodules
+$ git clone https://github.com/OneGameKoTT/anbox.git --recurse-submodules
 $ cd anbox
 $ mkdir build
 $ cd build
@@ -142,6 +152,8 @@ $ cp /path/to/android.img android-images/android.img
 $ snapcraft
 ```
 
+* [Download prebuilt android.img](https://build.anbox.io/android-images/)
+
 The result will be a .snap file you can install on a system supporting snaps
 
 ```
@@ -149,6 +161,26 @@ $ snap install --dangerous --devmode anbox_1_amd64.snap
 ```
 
 ## Run Anbox
+
+If `binder: false` on `anbox system-info` mount binder:
+```
+$ sudo mkdir /dev/binderfs
+$ sudo mount -t binder binder /dev/binderfs
+```
+
+#### Creating service:
+
+Create file: `/etc/systemd/system/<name>.service` and fill with content: 
+```
+[Unit]
+Description=Anbox Container Manager
+
+[Service]
+ExecStart=anbox container-manager --daemon --privileged --data-path=<path to data> --use-rootfs-overlay --software-rendering=true
+
+[Install]
+WantedBy=multi-user.target
+```
 
 Running Anbox from a local build requires a few more things you need to know
 about. Please have a look at the ["Runtime Setup"](docs/runtime-setup.md)
@@ -162,7 +194,7 @@ of the project source.
 Interesting things to have a look at
 
  * [Runtime Setup](docs/runtime-setup.md)
- * [Build Android image](docs/build-android.md)
+ * [Build Android image](docs/build-android.md) or [download prebuilt image](https://build.anbox.io/android-images/)
  * [Generate Android emugl source](docs/generate-emugl-source.md)
  * [DBUS interface](docs/dbus.md)
 
