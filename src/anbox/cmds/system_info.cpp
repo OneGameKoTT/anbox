@@ -77,7 +77,7 @@ class SystemInformation {
 
     s << "os:" << std::endl
       << "  name: " << os_info_.name << std::endl
-      << "  version: " << os_info_.version << std::endl
+      << "  version: " << os_info_.version << std::endl;
 
     s << "kernel:" << std::endl
       << "  version: " << kernel_info_.version << std::endl
