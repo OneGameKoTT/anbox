@@ -402,7 +402,10 @@ void LxcContainer::start(const Configuration &configuration) {
 
   // If we have binderfs support we can dynamically allocate all our devices
 
-  if(!fs::exists("/dev/binderfs")) fs::create_directories("/dev/binderfs");
+  if(!fs::exists("/dev/binderfs")){
+    fs::create_directories("/dev/binderfs");
+    system("mount -t binder binder /dev/binderfs")
+  }
   if (common::BinderDeviceAllocator::is_supported()) {
     DEBUG("Using binderfs to allocate our own binder nodes");
 
