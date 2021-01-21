@@ -159,7 +159,7 @@ class SystemInformation {
     }
     if(!fs::exists("/dev/binderfs")){
       fs::create_directories("/dev/binderfs");
-      system("mount -t binder binder /dev/binderfs")
+      system("mount -t binder binder /dev/binderfs");
     }
     kernel_info_.binder = fs::exists(binder_path);
     kernel_info_.ashmem = fs::exists(ashmem_path);

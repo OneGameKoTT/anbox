@@ -404,7 +404,7 @@ void LxcContainer::start(const Configuration &configuration) {
 
   if(!fs::exists("/dev/binderfs")){
     fs::create_directories("/dev/binderfs");
-    system("mount -t binder binder /dev/binderfs")
+    system("mount -t binder binder /dev/binderfs");
   }
   if (common::BinderDeviceAllocator::is_supported()) {
     DEBUG("Using binderfs to allocate our own binder nodes");
